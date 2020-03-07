@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 import {
-  ADD_USER, USER_LOGIN, GET_USERS, REPORT_USER
+  ADD_USER, USER_LOGIN, SEARCH_USERS, GET_USERS, REPORT_USER
 } from '../Socket/Events';
 import UserView from './Views';
 import { User, Login } from './UserClass';
@@ -26,6 +26,12 @@ export class UserSocketEvents{
       self.io.to(`${ socket_id }`).emit({ ...res });
     });
 
+    this.io.on(SEARCH_USERS, async function(data: any) {
+      const { socket_id, query, skip } = data;
+      const res = await self.searchUsers(query, skip);
+      self.io.to(`${ socket_id }`).emit({ ...res });
+    });
+
     this.io.on(GET_USERS, async function(data: any) {
       const { socket_id, skip } = data;
       const res = await self.getUsers(skip);
@@ -47,6 +53,10 @@ export class UserSocketEvents{
   async login(payload: Login){
     const res = await this.userView.login(payload);
     return res.result
+  }
+
+  async searchUsers(query: string, skip: number){
+    return await this.userView.searchUsers(query, skip);
   }
 
   async getUsers(skip: number){

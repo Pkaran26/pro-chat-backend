@@ -3,6 +3,7 @@ export const DISCONNECT = 'disconnect';
 
 export const ADD_USER = 'ADD_USER';
 export const USER_LOGIN = 'USER_LOGIN';
+export const SEARCH_USERS = 'SEARCH_USERS';
 export const GET_USERS = 'GET_USERS';
 export const REPORT_USER = 'REPORT_USER';
 

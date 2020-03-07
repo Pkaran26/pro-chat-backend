@@ -35,11 +35,37 @@ export default class UserView{
     }
   }
 
+  async searchUsers(query: string, skip: number){
+    try {
+      await this._conn.connect();
+      return await this._conn.db.collection('user').aggregate([
+        {
+          $match: {
+            $or: [
+              { first_name: `/${ query }/` },
+              { last: `/${ query }/` },
+              { email: `/${ query }/` }
+            ]
+          },
+          $skip: skip,
+          $limit: 10
+        },
+      ])
+      .toArray()
+    } catch (error) {
+      console.log(error);
+      return null;
+    } finally {
+      //this._conn.close()
+    }
+  }
+
   async getUsers(skip: number){
     try {
       await this._conn.connect();
       return await this._conn.db.collection('user').aggregate([{
-        $skip: skip
+        $skip: skip,
+        $limit: 10
       }]).toArray()
     } catch (error) {
       console.log(error);
